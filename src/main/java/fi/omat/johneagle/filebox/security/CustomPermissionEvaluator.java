@@ -1,17 +1,18 @@
 package fi.omat.johneagle.filebox.security;
 
-import fi.omat.johneagle.filebox.domain.entities.Account;
-import fi.omat.johneagle.filebox.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
-
 import java.io.Serializable;
+import fi.omat.johneagle.filebox.domain.entities.Account;
+import fi.omat.johneagle.filebox.repository.AccountRepository;
 
 /**
- * Custom permission evaluator to replace spring securities default one. Main point is that this implementation is much more flexible then spring default.
- * Allows to preauthorize if user is doing something to something that he technically owns or does he has access as a friend or maybe want to have
+ * Custom permission evaluator to replace spring securities default one.
+ * Main point is that this implementation is much more flexible then spring default.
+ * Allows to preauthorize if user is doing something to something that he technically owns
+ * or does he has access as a friend or maybe want to have
  * some extra restrictions to make sure any rules ain't broken.
  */
 @Component
@@ -20,7 +21,8 @@ public class CustomPermissionEvaluator implements PermissionEvaluator {
     private AccountRepository accountRepository;
 
     /**
-     * This method is mainly called if user types to sec:authority or to preauthorize annotation following syntax: "hasPermission('string', 'string')".
+     * This method is mainly called if user types to sec:authority
+     * or to preauthorize annotation following syntax: "hasPermission('string', 'string')".
      *
      * @param auth spring securities authentication context holder object.
      * @param targetDomainObject first parameter in the syntax.

@@ -1,14 +1,12 @@
 package fi.omat.johneagle.filebox.validators;
 
-import javax.validation.Constraint;
-import javax.validation.Payload;
-import java.lang.annotation.Documented;
-import java.lang.annotation.Repeatable;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-
 import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+import javax.validation.Constraint;
+import javax.validation.Payload;
 
 /**
  * Custom validation annotation. Check if the nickname is already taken or not.
@@ -19,7 +17,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  */
 @Target({ METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE })
 @Retention(RUNTIME)
-@Repeatable(Nickname.List.class)
 @Documented
 @Constraint(validatedBy = { NicknameValidator.class })
 public @interface Nickname {
@@ -27,6 +24,9 @@ public @interface Nickname {
     Class<?>[] groups() default { };
     Class<? extends Payload>[] payload() default { };
 
+    /**
+     * interface which enables stacking annotations.
+     */
     @Target({ METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE })
     @Retention(RUNTIME)
     @Documented

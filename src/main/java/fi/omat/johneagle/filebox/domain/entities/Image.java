@@ -1,17 +1,14 @@
 package fi.omat.johneagle.filebox.domain.entities;
 
+import org.hibernate.annotations.Type;
+import org.springframework.data.jpa.domain.AbstractPersistable;
+import java.time.LocalDateTime;
+import javax.persistence.*;
 import fi.omat.johneagle.filebox.domain.enums.PictureState;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Type;
-import org.springframework.data.jpa.domain.AbstractPersistable;
-
-import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Database image table. Contains all the images in the application that users are posting.

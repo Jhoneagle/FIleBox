@@ -1,17 +1,17 @@
 package fi.omat.johneagle.filebox.controllers;
 
-import fi.omat.johneagle.filebox.domain.entities.Account;
-import fi.omat.johneagle.filebox.services.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import fi.omat.johneagle.filebox.domain.entities.Account;
+import fi.omat.johneagle.filebox.services.AccountService;
 
-import javax.validation.Valid;
-
+/**
+ * Controller to handle routes related to profile actions that user can do after authentication which aren't called by javascript.
+ * For REST API endpoints there is own specific controller to handle javascript related actions.
+ */
 @Controller
 public class ProfileController {
     @Autowired
@@ -26,7 +26,7 @@ public class ProfileController {
         // basically disabling the messages that are being spammed by this in the log otherwise.
         try {
             name = owner.getFullName();
-        } catch(Exception e) {
+        } catch (Exception e) {
             name = "";
         }
 

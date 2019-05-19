@@ -1,10 +1,12 @@
 package fi.omat.johneagle.filebox;
 
+import java.time.LocalDateTime;
 import fi.omat.johneagle.filebox.domain.entities.Account;
 import fi.omat.johneagle.filebox.domain.entities.Image;
 
-import java.time.LocalDateTime;
-
+/**
+ * Methods to simplify tests.
+ */
 public class TestUtilities {
     public static Account createAccount(String username, String password) {
         Account account = new Account();
