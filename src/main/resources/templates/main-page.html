@@ -1,0 +1,14 @@
+<!DOCTYPE HTML>
+<html xmlns:layout="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml"
+      layout:decorate="~{fragments/layout}">
+    <head>
+        <title>Main Page</title>
+    </head>
+    <body>
+        <div layout:fragment="content" class="container">
+            <div class="container-fluid text-center">
+                <p th:text="'Hello ' + ${profileName}"></p>
+            </div>
+        </div>
+    </body>
+</html>

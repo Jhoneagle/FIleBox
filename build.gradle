@@ -1,6 +1,9 @@
 plugins {
     id 'org.springframework.boot' version '2.2.0.M3'
     id 'java'
+
+    // Code style
+    id 'checkstyle'
 }
 
 apply plugin: 'io.spring.dependency-management'
@@ -17,6 +20,7 @@ configurations {
 
 repositories {
     mavenCentral()
+    jcenter()
     maven { url 'https://repo.spring.io/snapshot' }
     maven { url 'https://repo.spring.io/milestone' }
 }
@@ -40,4 +44,22 @@ dependencies {
     compile group: 'org.seleniumhq.selenium', name: 'selenium-htmlunit-driver', version: '2.52.0'
     testCompile group: 'org.fluentlenium', name: 'fluentlenium-assertj', version: '4.2.2'
     compile group: 'org.fluentlenium', name: 'fluentlenium-junit', version: '4.2.2'
+    testImplementation 'junit:junit:4.12'
 }
+
+test {
+    testLogging.showStandardStreams = true
+    systemProperties System.getProperties()
+}
+
+
+task stage {
+    dependsOn build
+}
+
+task copyToLib(type: Copy) {
+    into "$buildDir/libs"
+    from(configurations.compile)
+}
+
+stage.dependsOn(copyToLib)
