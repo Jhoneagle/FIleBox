@@ -10,18 +10,18 @@ import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Custom validation annotation. Check if the nickname is already taken or not.
+ * Custom validation annotation. Check if the image file is legit.
  * Main logic is in Constraint class that is connected to this.
  * As this mainly handles only that it can be used as annotation.
  *
- * @see NicknameValidator
+ * @see ImageValidator
  */
 @Target({ METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE })
 @Retention(RUNTIME)
 @Documented
-@Constraint(validatedBy = { NicknameValidator.class })
-public @interface Nickname {
-    String message() default "Nickname must be unique!";
+@Constraint(validatedBy = { ImageValidator.class })
+public @interface Image {
+    String message() default "Must be actual image!";
     Class<?>[] groups() default { };
     Class<? extends Payload>[] payload() default { };
 
@@ -32,6 +32,6 @@ public @interface Nickname {
     @Retention(RUNTIME)
     @Documented
     @interface List {
-        Nickname[] value();
+        Image[] value();
     }
 }

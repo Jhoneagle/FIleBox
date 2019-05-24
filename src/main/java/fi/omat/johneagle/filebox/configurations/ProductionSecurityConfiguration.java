@@ -1,5 +1,7 @@
 package fi.omat.johneagle.filebox.configurations;
 
+import fi.omat.johneagle.filebox.security.CustomPermissionEvaluator;
+import fi.omat.johneagle.filebox.services.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -15,8 +17,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import fi.omat.johneagle.filebox.security.CustomPermissionEvaluator;
-import fi.omat.johneagle.filebox.services.CustomUserDetailsService;
 
 /**
  * Security configurations for production environment.

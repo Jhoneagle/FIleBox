@@ -1,9 +1,10 @@
 package fi.omat.johneagle.filebox.validators;
 
+import fi.omat.johneagle.filebox.services.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import fi.omat.johneagle.filebox.services.AccountService;
 
 /**
  * Constraint class to handle the logic of validator annotation that has this connected into it.

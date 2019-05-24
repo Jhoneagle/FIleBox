@@ -1,7 +1,8 @@
 package fi.omat.johneagle.filebox.controllers;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertTrue;
+import fi.omat.johneagle.filebox.TestUtilities;
+import fi.omat.johneagle.filebox.domain.entities.Account;
+import fi.omat.johneagle.filebox.repository.AccountRepository;
 import org.fluentlenium.adapter.junit.FluentTest;
 import org.junit.After;
 import org.junit.Before;
@@ -13,9 +14,9 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
-import fi.omat.johneagle.filebox.TestUtilities;
-import fi.omat.johneagle.filebox.domain.entities.Account;
-import fi.omat.johneagle.filebox.repository.AccountRepository;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Integrations tests for authentication actions like registration and login.

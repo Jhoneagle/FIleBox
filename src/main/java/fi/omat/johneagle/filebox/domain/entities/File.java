@@ -1,5 +1,6 @@
 package fi.omat.johneagle.filebox.domain.entities;
 
+import fi.omat.johneagle.filebox.domain.enums.FileVisibility;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -9,31 +10,37 @@ import org.springframework.data.jpa.domain.AbstractPersistable;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Database image table. Contains all the images in the application that users are posting.
+ * Database table for files.
  */
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Image extends AbstractPersistable<Long> {
-    private String name;
-    private String description;
+public class File extends AbstractPersistable<Long> {
+    private FileVisibility visibility;
     private LocalDateTime timestamp;
 
-    // Image headers.
+    // For visibility RESTRICT to tell who can see.
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<String> specificCanSee = new ArrayList<>();
+
+    // File Header
     private String filename;
     private String contentType;
     private Long contentLength;
 
-    // Actual image or well more like its digital representation.
+    // Actual file or well more like its digital representation.
     @Lob
-    @Type(type = "org.hibernate.type.ImageType")
+    @Type(type = "org.hibernate.type.BinaryType")
     @Basic(fetch = FetchType.LAZY)
     private byte[] content;
 
+    // Owner
     @OneToOne
     private Account owner;
 }

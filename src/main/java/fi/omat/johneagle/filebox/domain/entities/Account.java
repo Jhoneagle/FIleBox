@@ -1,17 +1,15 @@
 package fi.omat.johneagle.filebox.domain.entities;
 
-import org.springframework.data.jpa.domain.AbstractPersistable;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.springframework.data.jpa.domain.AbstractPersistable;
+
+import javax.persistence.*;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Database User table. Containing all the info of the users.
@@ -34,9 +32,12 @@ public class Account extends AbstractPersistable<Long> {
     private String email;
     private LocalDate born;
 
-    // Images the account has added.
+    @OneToOne(mappedBy = "owner")
+    private Image profileImage;
+
+    // FIles the account has added.
     @OneToMany(mappedBy = "owner")
-    private List<Image> images = new ArrayList<>();
+    private List<File> files = new ArrayList<>();
 
     // Authorities account has.
     @ElementCollection(fetch = FetchType.EAGER)

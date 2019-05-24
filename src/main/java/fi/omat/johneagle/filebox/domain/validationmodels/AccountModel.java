@@ -1,6 +1,5 @@
 package fi.omat.johneagle.filebox.domain.validationmodels;
 
-import javax.validation.constraints.NotEmpty;
 import fi.omat.johneagle.filebox.validators.FieldMatch;
 import fi.omat.johneagle.filebox.validators.Nickname;
 import fi.omat.johneagle.filebox.validators.Password;
@@ -8,6 +7,8 @@ import fi.omat.johneagle.filebox.validators.Username;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import javax.validation.constraints.NotEmpty;
 
 /**
  * Validation object for registration form.
@@ -22,7 +23,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @FieldMatch(first = "password", second = "passwordAgain", message = "The password fields must match!") // Checks if both fields match perfectly.
 public class AccountModel {
-
     // Custom username check.
     @Username
     private String username;
