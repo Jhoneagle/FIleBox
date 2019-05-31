@@ -4,6 +4,8 @@ import fi.omat.johneagle.filebox.domain.entities.Account;
 import fi.omat.johneagle.filebox.domain.validationmodels.AccountModel;
 import fi.omat.johneagle.filebox.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -55,5 +57,18 @@ public class AccountService {
         validated.getAuthorities().add("USER");
 
         this.accountRepository.save(validated);
+    }
+
+    /**
+     * Checks if current userrs password equals given one.
+     *
+     * @param password password given.
+     *
+     * @return <code>true</code> if password is equivalent with the old one of current user and otherwise <code>false</code>.
+     */
+    public boolean equivalentPassword(String password) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Account user = findByUsername(auth.getName());
+        return user.getPassword().equals(passwordEncoder.encode(password));
     }
 }

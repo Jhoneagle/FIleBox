@@ -2,7 +2,9 @@ package fi.omat.johneagle.filebox.controllers;
 
 import fi.omat.johneagle.filebox.domain.entities.Account;
 import fi.omat.johneagle.filebox.domain.validationmodels.ImageModel;
+import fi.omat.johneagle.filebox.domain.validationmodels.PersonInfoModel;
 import fi.omat.johneagle.filebox.services.ProfileService;
+import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * Controller to handle routes related to profile actions that user can do after authentication which aren't called by javascript.
@@ -22,12 +25,9 @@ public class ProfileController {
     @Autowired
     private ProfileService profileService;
 
+
     @GetMapping("/fileBox/{nickname}")
     public String mainPage(Model model, @PathVariable String nickname) {
-        if (!model.containsAttribute("imageModel")) {
-            model.addAttribute("imageModel", new ImageModel());
-        }
-
         Account owner = this.profileService.findByNickname(nickname);
         String name;
 
@@ -45,6 +45,9 @@ public class ProfileController {
 
     /**
      * Personal page.
+     * This router is also preAuthorized by security to make sure user has authorization to do this.
+     *
+     * @see fi.omat.johneagle.filebox.security.CustomPermissionEvaluator
      *
      * @param model model object
      * @param nickname nickname of the person whose page
@@ -54,19 +57,39 @@ public class ProfileController {
     @PreAuthorize("hasPermission('owner', #nickname)")
     @GetMapping("/fileBox/{nickname}/personal")
     public String infoPage(Model model, @PathVariable String nickname) {
-        Account owner = this.profileService.findByNickname(nickname);
-        String name;
-
-        // avoiding non fatal null pointer exception that is caused by 'fast access into lazy object'.
-        // basically disabling the messages that are being spammed by this in the log otherwise.
-        try {
-            name = owner.getFullName();
-        } catch (Exception e) {
-            name = "";
+        if (!model.containsAttribute("imageModel")) {
+            model.addAttribute("imageModel", new ImageModel());
         }
 
-        model.addAttribute("profileName", name);
-        return "main-page";
+        if (!model.containsAttribute("personInfoModel")) {
+            Account owner = this.profileService.findByNickname(nickname);
+            PersonInfoModel validationModel = new PersonInfoModel();
+
+            try {
+                BeanUtils.copyProperties(validationModel, owner);
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                e.printStackTrace();
+            }
+
+            model.addAttribute("personInfoModel", validationModel);
+        }
+
+        return "personal-page";
+    }
+
+
+    @PreAuthorize("hasPermission('owner', #nickname)")
+    @PostMapping("/fileBox/{nickname}/personal")
+    public String updateInfo(@PathVariable String nickname, @Valid @ModelAttribute PersonInfoModel personInfoModel,
+                             BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if(bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.personInfoModel", bindingResult);
+            redirectAttributes.addFlashAttribute("personInfoModel", personInfoModel);
+        } else {
+            this.profileService.updateProfile(personInfoModel);
+        }
+
+        return "redirect:/fileBox/" + nickname + "/personal";
     }
 
     /**

@@ -3,15 +3,19 @@ package fi.omat.johneagle.filebox.services;
 import fi.omat.johneagle.filebox.domain.entities.Account;
 import fi.omat.johneagle.filebox.domain.entities.Image;
 import fi.omat.johneagle.filebox.domain.models.SearchResult;
+import fi.omat.johneagle.filebox.domain.validationmodels.PersonInfoModel;
 import fi.omat.johneagle.filebox.repository.AccountRepository;
 import fi.omat.johneagle.filebox.repository.ImageRepository;
+import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +27,9 @@ import java.util.List;
 public class ProfileService {
     @Autowired
     private AccountRepository accountRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private ImageRepository imageRepository;
@@ -86,6 +93,11 @@ public class ProfileService {
             model.setNickname(found.getNickname());
             model.setName(found.getFullName());
 
+            Image pic = found.getProfileImage();
+            if (pic != null) {
+                model.setPic(pic.getId());
+            }
+
             result.add(model);
         }
 
@@ -121,5 +133,28 @@ public class ProfileService {
         image.setOwner(user);
 
         this.imageRepository.save(image);
+    }
+
+    /**
+     * Updates the profile info of the current user.
+     *
+     * @param validationModel model that validated the data gotten.
+     */
+    public void updateProfile(PersonInfoModel validationModel) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Account user = findByUsername(auth.getName());
+
+        try {
+            BeanUtils.copyProperties(user, validationModel);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+
+        // Password updated only if given new one.
+        if (!validationModel.getNewPassword().equals("")) {
+            user.setPassword(passwordEncoder.encode(validationModel.getNewPassword()));
+        }
+
+        this.accountRepository.save(user);
     }
 }

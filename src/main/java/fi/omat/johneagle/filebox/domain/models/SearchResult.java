@@ -13,4 +13,5 @@ import lombok.NoArgsConstructor;
 public class SearchResult {
     private String nickname;
     private String name;
+    private Long pic;
 }
