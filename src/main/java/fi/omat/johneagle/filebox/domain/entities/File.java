@@ -26,7 +26,7 @@ public class File extends AbstractPersistable<Long> {
     private LocalDateTime timestamp;
 
     // For visibility RESTRICT to tell who can see.
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection
     private List<String> specificCanSee = new ArrayList<>();
 
     // File Header

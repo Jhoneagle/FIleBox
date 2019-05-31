@@ -1,13 +1,32 @@
 <!DOCTYPE HTML>
 <html xmlns:layout="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:sec="http://www.w3.org/1999/xhtml"
       layout:decorate="~{fragments/layout}">
     <head>
         <title>Home</title>
     </head>
     <body>
         <div layout:fragment="content" class="container">
-            <div class="container-fluid text-center">
-                <p th:text="'Hello ' + ${profileName}"></p>
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-3 well text-center">
+                        <div>
+                            <div th:if="${picId}" class="panel-body text-center">
+                                <img th:src="@{/fileBox/api/files/{id}(id=${picId})}" class="img-circle profile-avatar" height="65" width="65" alt="User avatar">
+                            </div>
+                            <div th:unless="${picId}"  class="panel-body text-center">
+                                <img th:src="@{/img/anonymous.png}" class="img-circle profile-avatar" height="65" width="65" alt="Anonymous avatar">
+                            </div>
+                            <p th:text="${profileName}">name of owner</p>
+                        </div>
+                        <div sec:authorize="hasPermission('owner', #request.getAttribute('whoseWall'))">
+                            <p><a th:href="'/fileBox/' + ${whoseWall} + '/personal'">Edit profile</a></p>
+                        </div>
+                    </div>
+                    <div class="col-sm-9">
+
+                    </div>
+                </div>
             </div>
         </div>
     </body>

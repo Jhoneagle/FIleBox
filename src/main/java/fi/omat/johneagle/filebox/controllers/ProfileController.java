@@ -1,6 +1,7 @@
 package fi.omat.johneagle.filebox.controllers;
 
 import fi.omat.johneagle.filebox.domain.entities.Account;
+import fi.omat.johneagle.filebox.domain.entities.Image;
 import fi.omat.johneagle.filebox.domain.validationmodels.ImageModel;
 import fi.omat.johneagle.filebox.domain.validationmodels.PersonInfoModel;
 import fi.omat.johneagle.filebox.services.ProfileService;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -39,7 +41,13 @@ public class ProfileController {
             name = "";
         }
 
+        Image profileImage = owner.getProfileImage();
+        if (profileImage != null) {
+            model.addAttribute("picId", profileImage.getId());
+        }
+
         model.addAttribute("profileName", name);
+        model.addAttribute("whoseWall", owner.getNickname());
         return "main-page";
     }
 
@@ -57,12 +65,13 @@ public class ProfileController {
     @PreAuthorize("hasPermission('owner', #nickname)")
     @GetMapping("/fileBox/{nickname}/personal")
     public String infoPage(Model model, @PathVariable String nickname) {
+        Account owner = this.profileService.findByNickname(nickname);
+
         if (!model.containsAttribute("imageModel")) {
             model.addAttribute("imageModel", new ImageModel());
         }
 
         if (!model.containsAttribute("personInfoModel")) {
-            Account owner = this.profileService.findByNickname(nickname);
             PersonInfoModel validationModel = new PersonInfoModel();
 
             try {
@@ -72,6 +81,11 @@ public class ProfileController {
             }
 
             model.addAttribute("personInfoModel", validationModel);
+        }
+
+        Image profileImage = owner.getProfileImage();
+        if (profileImage != null) {
+            model.addAttribute("picId", profileImage.getId());
         }
 
         return "personal-page";
@@ -100,21 +114,8 @@ public class ProfileController {
      *
      * @return template name.
      */
-    @PostMapping("/fileBox/search")
-    public String search(@RequestParam String searchField) {
-        return "redirect:/fileBox/search/" + searchField;
-    }
-
-    /**
-     * Returns search page showing there the result that was gotten by the parameter user gave.
-     * In this situations the list of persons whose first and/or last name withs the search parameter.
-     *
-     * @param model model object
-     *
-     * @return template name.
-     */
-    @GetMapping("/fileBox/search/{searchField}")
-    public String search(Model model, @PathVariable String searchField) {
+    @PostMapping("/fileBox/people/search")
+    public String search(Model model, @RequestParam String searchField) {
         model.addAttribute("result", this.profileService.findPeopleWithParam(searchField));
         return "search-page";
     }

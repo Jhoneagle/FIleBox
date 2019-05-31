@@ -26,7 +26,7 @@ public class InteractionController {
      * @param id id of the image to be shown.
      * @return Content of the image.
      */
-    @GetMapping("/old-face/api/files/{id}")
+    @GetMapping("/fileBox/api/files/{id}")
     public ResponseEntity<byte[]> viewImage(@PathVariable Long id) {
         Image image = this.imageService.getImageById(id);
 
