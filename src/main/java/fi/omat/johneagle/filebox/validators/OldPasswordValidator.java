@@ -11,7 +11,7 @@ import javax.validation.ConstraintValidatorContext;
  *
  * @see Password
  */
-public class OldPasswordValidator implements ConstraintValidator<Password, String> {
+public class OldPasswordValidator implements ConstraintValidator<OldPassword, String> {
     @Autowired
     private AccountService accountService;
 
@@ -28,10 +28,8 @@ public class OldPasswordValidator implements ConstraintValidator<Password, Strin
         String violationMessage = "";
 
         if (password.equals("")) {
-            return true;
-        }
-
-        if (!accountService.equivalentPassword(password)) {
+            violationMessage = "Password must not be empty!";
+        } else if (!accountService.equivalentPassword(password)) {
             violationMessage = "Password is not correct!";
         }
 

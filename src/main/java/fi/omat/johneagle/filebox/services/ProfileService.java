@@ -3,6 +3,7 @@ package fi.omat.johneagle.filebox.services;
 import fi.omat.johneagle.filebox.domain.entities.Account;
 import fi.omat.johneagle.filebox.domain.entities.Image;
 import fi.omat.johneagle.filebox.domain.models.SearchResult;
+import fi.omat.johneagle.filebox.domain.validationmodels.ChangePasswordModel;
 import fi.omat.johneagle.filebox.domain.validationmodels.PersonInfoModel;
 import fi.omat.johneagle.filebox.repository.AccountRepository;
 import fi.omat.johneagle.filebox.repository.ImageRepository;
@@ -150,11 +151,14 @@ public class ProfileService {
             e.printStackTrace();
         }
 
-        // Password updated only if given new one.
-        if (!validationModel.getNewPassword().equals("")) {
-            user.setPassword(passwordEncoder.encode(validationModel.getNewPassword()));
-        }
+        this.accountRepository.save(user);
+    }
 
+    public void updatePassword(ChangePasswordModel changePasswordModel) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Account user = findByUsername(auth.getName());
+
+        user.setPassword(passwordEncoder.encode(changePasswordModel.getNewPassword()));
         this.accountRepository.save(user);
     }
 }

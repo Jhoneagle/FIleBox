@@ -2,6 +2,7 @@ package fi.omat.johneagle.filebox.controllers;
 
 import fi.omat.johneagle.filebox.domain.entities.Account;
 import fi.omat.johneagle.filebox.domain.entities.Image;
+import fi.omat.johneagle.filebox.domain.validationmodels.ChangePasswordModel;
 import fi.omat.johneagle.filebox.domain.validationmodels.ImageModel;
 import fi.omat.johneagle.filebox.domain.validationmodels.PersonInfoModel;
 import fi.omat.johneagle.filebox.services.ProfileService;
@@ -71,6 +72,10 @@ public class ProfileController {
             model.addAttribute("imageModel", new ImageModel());
         }
 
+        if (!model.containsAttribute("changePasswordModel")) {
+            model.addAttribute("changePasswordModel", new ChangePasswordModel());
+        }
+
         if (!model.containsAttribute("personInfoModel")) {
             PersonInfoModel validationModel = new PersonInfoModel();
 
@@ -88,6 +93,7 @@ public class ProfileController {
             model.addAttribute("picId", profileImage.getId());
         }
 
+        model.addAttribute("whoseWall", owner.getNickname());
         return "personal-page";
     }
 
@@ -101,6 +107,20 @@ public class ProfileController {
             redirectAttributes.addFlashAttribute("personInfoModel", personInfoModel);
         } else {
             this.profileService.updateProfile(personInfoModel);
+        }
+
+        return "redirect:/fileBox/" + nickname + "/personal";
+    }
+
+    @PreAuthorize("hasPermission('owner', #nickname)")
+    @PostMapping("/fileBox/{nickname}/update")
+    public String changePassword(@PathVariable String nickname, @Valid @ModelAttribute ChangePasswordModel changePasswordModel,
+                             BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if(bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.changePasswordModel", bindingResult);
+            redirectAttributes.addFlashAttribute("changePasswordModel", changePasswordModel);
+        } else {
+            this.profileService.updatePassword(changePasswordModel);
         }
 
         return "redirect:/fileBox/" + nickname + "/personal";

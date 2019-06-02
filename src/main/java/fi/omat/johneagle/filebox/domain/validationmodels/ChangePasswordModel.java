@@ -21,20 +21,16 @@ import java.time.LocalDate;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PersonInfoModel {
-    @NotEmpty
-    private String firstName;
+@FieldMatch(first = "newPassword", second = "newPasswordAgain", message = "The password fields must match!") // Checks if both fields match perfectly.
+public class ChangePasswordModel {
+    // Ensures old password is given.
+    @OldPassword
+    private String oldPassword;
+
+    // Checks if password is valid
+    @Password
+    private String newPassword;
 
     @NotEmpty
-    private String lastName;
-
-    // Custom email validation
-    @ValidEmail
-    private String email;
-
-    private LocalDate born;
-    private String address;
-    private String addressNumber;
-    private String city;
-    private String phoneNumber;
+    private String newPasswordAgain;
 }

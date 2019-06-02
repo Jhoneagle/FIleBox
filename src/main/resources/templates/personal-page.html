@@ -46,41 +46,80 @@
             <div class="container bootstrap snippets">
                 <div class="row">
                     <div class="col-xs-12 col-sm-9">
-                        <form class="form-horizontal">
-                            <div class="panel panel-default">
-                                <div class="panel-body text-center">
-                                    <img src="https://bootdey.com/img/Content/avatar/avatar6.png" class="img-circle profile-avatar" alt="User avatar">
+                        <div class="panel panel-default">
+                            <div th:if="${picId}" class="panel-body text-center">
+                                <img th:src="@{/fileBox/api/files/{id}(id=${picId})}" class="img-circle profile-avatar" alt="User avatar">
+                            </div>
+                            <div th:unless="${picId}" class="panel-body text-center">
+                                <img th:src="@{/img/anonymous.png}" class="img-circle profile-avatar" alt="Anonymous avatar">
+                            </div>
+                        </div>
+
+                        <form class="form-horizontal" th:action="@{/fileBox/{path}/setProfilePicture(path=${whoseWall})}"
+                              th:object="${imageModel}" method="post" enctype="multipart/form-data">
+
+                            <div class="col-sm-10">
+                                <input type="file"
+                                       id="file"
+                                       name="file"
+                                       class="form-control"
+                                       th:field="*{file}" />
+                            </div>
+                            <div th:if="${#fields.hasErrors('file')}" th:errors="*{file}"></div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-sm-6 col-sm-offset-3">
+                                        <input type="submit"
+                                               name="image-submit"
+                                               id="image-submit"
+                                               class="form-control btn btn-success"
+                                               value="Post">
+                                    </div>
                                 </div>
                             </div>
+                        </form>
+
+                        <form class="form-horizontal" th:action="@{/fileBox/{path}/personal(path=${whoseWall})}"
+                              th:object="${personInfoModel}" method="post">
                             <div class="panel panel-default">
                                 <div class="panel-heading">
                                     <h4 class="panel-title">User info</h4>
                                 </div>
                                 <div class="panel-body">
                                     <div class="form-group">
-                                        <label class="col-sm-2 control-label">Location</label>
+                                        <label class="col-sm-2 control-label">First name</label>
                                         <div class="col-sm-10">
-                                            <select class="form-control">
-                                                <option selected="">Select country</option>
-                                                <option>Belgium</option>
-                                                <option>Canada</option>
-                                                <option>Denmark</option>
-                                                <option>Estonia</option>
-                                                <option>France</option>
-                                            </select>
+                                            <input type="text"
+                                                   id="firstName"
+                                                   name="firstName"
+                                                   class="form-control"
+                                                   autofocus="autofocus"
+                                                   th:field="*{firstName}" />
                                         </div>
+                                        <div th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-sm-2 control-label">Company name</label>
+                                        <label class="col-sm-2 control-label">Surname</label>
                                         <div class="col-sm-10">
-                                            <input type="text" class="form-control">
+                                            <input type="text"
+                                                   id="lastName"
+                                                   name="lastName"
+                                                   class="form-control"
+                                                   autofocus="autofocus"
+                                                   th:field="*{lastName}" />
                                         </div>
+                                        <div th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-sm-2 control-label">Position</label>
+                                        <label class="col-sm-2 control-label">Born</label>
                                         <div class="col-sm-10">
-                                            <input type="text" class="form-control">
+                                            <input type="date"
+                                                   id="born"
+                                                   name="born"
+                                                   class="form-control"
+                                                   th:field="*{born}" />
                                         </div>
+                                        <div th:if="${#fields.hasErrors('born')}" th:errors="*{born}"></div>
                                     </div>
                                 </div>
                             </div>
@@ -91,57 +130,114 @@
                                 </div>
                                 <div class="panel-body">
                                     <div class="form-group">
-                                        <label class="col-sm-2 control-label">Work number</label>
-                                        <div class="col-sm-10">
-                                            <input type="tel" class="form-control">
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
                                         <label class="col-sm-2 control-label">Mobile number</label>
                                         <div class="col-sm-10">
-                                            <input type="tel" class="form-control">
+                                            <input type="tel"
+                                                   id="phoneNumber"
+                                                   name="phoneNumber"
+                                                   class="form-control"
+                                                   th:field="*{phoneNumber}" />
                                         </div>
+                                        <div th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-sm-2 control-label">E-mail address</label>
                                         <div class="col-sm-10">
-                                            <input type="email" class="form-control">
+                                            <div class="col-sm-10">
+                                                <input type="email"
+                                                       id="email"
+                                                       name="email"
+                                                       class="form-control"
+                                                       th:field="*{email}" />
+                                            </div>
+                                            <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-sm-2 control-label">Work address</label>
+                                        <label class="col-sm-2 control-label">Address</label>
                                         <div class="col-sm-10">
-                                            <textarea rows="3" class="form-control"></textarea>
+                                            <input type="text"
+                                                   id="address"
+                                                   name="address"
+                                                   class="form-control"
+                                                   autofocus="autofocus"
+                                                   th:field="*{address}" />
+                                        </div>
+                                        <div th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">Post number</label>
+                                        <div class="col-sm-10">
+                                            <input type="text"
+                                                   id="addressNumber"
+                                                   name="addressNumber"
+                                                   class="form-control"
+                                                   autofocus="autofocus"
+                                                   th:field="*{addressNumber}" />
+                                        </div>
+                                        <div th:if="${#fields.hasErrors('addressNumber')}" th:errors="*{addressNumber}"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">City</label>
+                                        <div class="col-sm-10">
+                                            <input type="text"
+                                                   id="city"
+                                                   name="city"
+                                                   class="form-control"
+                                                   autofocus="autofocus"
+                                                   th:field="*{city}" />
+                                        </div>
+                                        <div th:if="${#fields.hasErrors('city')}" th:errors="*{city}"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-sm-10 col-sm-offset-2">
+                                            <button type="submit" class="btn btn-primary">Submit</button>
+                                            <button type="reset" class="btn btn-default">Cancel</button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                        </form>
 
+                        <form class="form-horizontal" th:action="@{/fileBox/{path}/update(path=${whoseWall})}"
+                              th:object="${changePasswordModel}" method="post">
                             <div class="panel panel-default">
                                 <div class="panel-heading">
-                                    <h4 class="panel-title">Security</h4>
+                                    <h4 class="panel-title">Change password</h4>
                                 </div>
                                 <div class="panel-body">
                                     <div class="form-group">
                                         <label class="col-sm-2 control-label">Current password</label>
                                         <div class="col-sm-10">
-                                            <input type="password" class="form-control">
+                                            <input type="password"
+                                                   id="oldPassword"
+                                                   name="oldPassword"
+                                                   class="form-control"
+                                                   th:field="*{oldPassword}" />
                                         </div>
+                                        <div th:if="${#fields.hasErrors('oldPassword')}" th:errors="*{oldPassword}"></div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-sm-2 control-label">New password</label>
                                         <div class="col-sm-10">
-                                            <input type="password" class="form-control">
+                                            <input type="password"
+                                                   id="newPassword"
+                                                   name="newPassword"
+                                                   class="form-control"
+                                                   th:field="*{newPassword}" />
                                         </div>
+                                        <div th:if="${#fields.hasErrors('newPassword')}" th:errors="*{newPassword}"></div>
+                                    </div><div class="form-group">
+                                    <label class="col-sm-2 control-label">Confirm new password</label>
+                                    <div class="col-sm-10">
+                                        <input type="password"
+                                               id="newPasswordAgain"
+                                               name="newPasswordAgain"
+                                               class="form-control"
+                                               th:field="*{newPasswordAgain}" />
                                     </div>
-                                    <div class="form-group">
-                                        <div class="col-sm-10 col-sm-offset-2">
-                                            <div class="checkbox">
-                                                <input type="checkbox" id="checkbox_1">
-                                                <label for="checkbox_1">Make this account public</label>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <div th:if="${#fields.hasErrors('newPasswordAgain')}" th:errors="*{newPasswordAgain}"></div>
+                                </div>
                                     <div class="form-group">
                                         <div class="col-sm-10 col-sm-offset-2">
                                             <button type="submit" class="btn btn-primary">Submit</button>
@@ -155,5 +251,32 @@
                 </div>
             </div>
         </div>
+        <script>
+          /*document.getElementById("image-submit").addEventListener("click", function(event) {
+            if (window.File && window.FileReader && window.FileList && window.Blob) {
+              //get the file size and file type from file input field
+              var field = $('#file');
+
+              var fsize = field[0].files[0].size;
+              var ftype = field[0].files[0].type;
+
+              switch(ftype) {
+                case 'image/png':
+                case 'image/gif':
+                case 'image/jpeg':
+                case 'image/jpg':
+                  break;
+                default:
+                  alert('Image file must be in format of either jpg, jpeg, png or gif!');
+                  event.preventDefault();
+              }
+
+              if(fsize > 3145728) {
+                alert("Image must not excess size of 3MB!");
+                event.preventDefault();
+              }
+            }
+          });*/
+        </script>
     </body>
 </html>

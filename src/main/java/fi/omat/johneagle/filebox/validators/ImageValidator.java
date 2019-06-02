@@ -31,6 +31,8 @@ public class ImageValidator implements ConstraintValidator<Image, MultipartFile>
             violationMessage = "File must not be empty!";
         } else if (!types.contains(file.getContentType())) {
             violationMessage = "File must be actual image file!";
+        } else if (file.getSize() > 3145728) {
+            violationMessage = "File must not excess 3MB!";
         }
 
         if (!(violationMessage.equals(""))) {
