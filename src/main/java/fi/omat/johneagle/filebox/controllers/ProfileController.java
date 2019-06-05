@@ -3,6 +3,7 @@ package fi.omat.johneagle.filebox.controllers;
 import fi.omat.johneagle.filebox.domain.entities.Account;
 import fi.omat.johneagle.filebox.domain.entities.Image;
 import fi.omat.johneagle.filebox.domain.validationmodels.ChangePasswordModel;
+import fi.omat.johneagle.filebox.domain.validationmodels.DownloadFile;
 import fi.omat.johneagle.filebox.domain.validationmodels.ImageModel;
 import fi.omat.johneagle.filebox.domain.validationmodels.PersonInfoModel;
 import fi.omat.johneagle.filebox.services.ProfileService;
@@ -11,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -47,6 +47,7 @@ public class ProfileController {
             model.addAttribute("picId", profileImage.getId());
         }
 
+        model.addAttribute("files", this.profileService.getShowableFiles(nickname));
         model.addAttribute("profileName", name);
         model.addAttribute("whoseWall", owner.getNickname());
         return "main-page";
@@ -166,5 +167,26 @@ public class ProfileController {
         }
 
         return "redirect:/fileBox/" + nickname + "/personal";
+    }
+
+    @PreAuthorize("hasPermission('owner', #nickname)")
+    @PostMapping("/fileBox/{nickname}/newFIle")
+    public String saveFile(@PathVariable String nickname, @Valid @ModelAttribute DownloadFile downloadFile,
+                                      BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.downloadFile", bindingResult);
+            redirectAttributes.addFlashAttribute("downloadFile", downloadFile);
+        } else {
+            this.profileService.saveFile(downloadFile);
+        }
+
+        return "redirect:/fileBox/" + nickname;
+    }
+
+    @PreAuthorize("hasPermission('owner', #nickname)")
+    @PostMapping("/fileBox/{nickname}/deleteFile/{id}")
+    public String deleteFile(@PathVariable String nickname, @PathVariable Long id) {
+        this.profileService.deleteFile(id);
+        return "redirect:/fileBox/" + nickname;
     }
 }

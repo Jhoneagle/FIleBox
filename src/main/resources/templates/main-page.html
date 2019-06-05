@@ -12,7 +12,7 @@
                     <div class="col-sm-3 well text-center">
                         <div>
                             <div th:if="${picId}" class="panel-body text-center">
-                                <img th:src="@{/fileBox/api/files/{id}(id=${picId})}" class="img-circle profile-avatar" height="65" width="65" alt="User avatar">
+                                <img th:src="@{/fileBox/api/images/{id}(id=${picId})}" class="img-circle profile-avatar" height="65" width="65" alt="User avatar">
                             </div>
                             <div th:unless="${picId}"  class="panel-body text-center">
                                 <img th:src="@{/img/anonymous.png}" class="img-circle profile-avatar" height="65" width="65" alt="Anonymous avatar">

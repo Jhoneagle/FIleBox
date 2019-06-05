@@ -1,11 +1,15 @@
 package fi.omat.johneagle.filebox.services;
 
 import fi.omat.johneagle.filebox.domain.entities.Account;
+import fi.omat.johneagle.filebox.domain.entities.File;
 import fi.omat.johneagle.filebox.domain.entities.Image;
+import fi.omat.johneagle.filebox.domain.models.FileModel;
 import fi.omat.johneagle.filebox.domain.models.SearchResult;
 import fi.omat.johneagle.filebox.domain.validationmodels.ChangePasswordModel;
+import fi.omat.johneagle.filebox.domain.validationmodels.DownloadFile;
 import fi.omat.johneagle.filebox.domain.validationmodels.PersonInfoModel;
 import fi.omat.johneagle.filebox.repository.AccountRepository;
+import fi.omat.johneagle.filebox.repository.FileRepository;
 import fi.omat.johneagle.filebox.repository.ImageRepository;
 import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +38,9 @@ public class ProfileService {
 
     @Autowired
     private ImageRepository imageRepository;
+
+    @Autowired
+    private FileRepository fileRepository;
 
     /**
      * Finds users account by his username.
@@ -160,5 +167,38 @@ public class ProfileService {
 
         user.setPassword(passwordEncoder.encode(changePasswordModel.getNewPassword()));
         this.accountRepository.save(user);
+    }
+
+    public List<FileModel> getShowableFiles(String nickname) {
+
+
+        return null;
+    }
+
+    public void deleteFile(Long id) {
+        this.fileRepository.delete(this.fileRepository.getOne(id));
+    }
+
+    public void saveFile(DownloadFile download) {
+        MultipartFile newOne = download.getFile();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Account user = findByUsername(auth.getName());
+
+        File file = new File();
+        file.setFilename(newOne.getOriginalFilename());
+        file.setContentType(newOne.getContentType());
+        file.setContentLength(newOne.getSize());
+
+        try {
+            file.setContent(newOne.getBytes());
+        } catch (IOException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+
+        file.setTimestamp(LocalDateTime.now());
+        file.setOwner(user);
+        file.setVisibility(download.getFileVisibility());
+
+        this.fileRepository.save(file);
     }
 }
