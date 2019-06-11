@@ -27,9 +27,12 @@ public class ProfileController {
     @Autowired
     private ProfileService profileService;
 
-
     @GetMapping("/fileBox/{nickname}")
     public String mainPage(Model model, @PathVariable String nickname) {
+        if (!model.containsAttribute("downloadFile")) {
+            model.addAttribute("downloadFile", new DownloadFile());
+        }
+
         Account owner = this.profileService.findByNickname(nickname);
         String name;
 
