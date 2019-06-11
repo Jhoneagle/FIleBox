@@ -3,6 +3,7 @@ package fi.omat.johneagle.filebox.services;
 import fi.omat.johneagle.filebox.domain.entities.Account;
 import fi.omat.johneagle.filebox.domain.entities.File;
 import fi.omat.johneagle.filebox.domain.entities.Image;
+import fi.omat.johneagle.filebox.domain.enums.FileVisibility;
 import fi.omat.johneagle.filebox.domain.models.FileModel;
 import fi.omat.johneagle.filebox.domain.models.SearchResult;
 import fi.omat.johneagle.filebox.domain.validationmodels.ChangePasswordModel;
@@ -23,6 +24,8 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -170,9 +173,32 @@ public class ProfileService {
     }
 
     public List<FileModel> getShowableFiles(String nickname) {
+        List<FileVisibility> access = new ArrayList<>();
+        access.add(FileVisibility.EVERYONE);
+        Account whoseWall = findByNickname(nickname);
 
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Account loggedIn = findByUsername(auth.getName());
 
-        return null;
+        if (loggedIn.equals(whoseWall)) {
+            access.add(FileVisibility.ME);
+        }
+
+        List<File> files = this.fileRepository.findAllByVisibilityInAndOwner(access, whoseWall);
+        files.addAll(this.fileRepository.findAllBySpecificCanSeeContainsAndOwner(Collections.singletonList(loggedIn.getUsername()), whoseWall));
+
+        List<FileModel> toView = new ArrayList<>();
+        files.forEach(file -> {
+            FileModel model = new FileModel();
+            model.setId(file.getId());
+            model.setContentLength(file.getContentLength());
+            model.setContentType(file.getContentType());
+            model.setFilename(file.getFilename());
+            model.setTimestamp(file.getTimestamp());
+            toView.add(model);
+        });
+
+        return toView;
     }
 
     public void deleteFile(Long id) {
