@@ -1,9 +1,8 @@
 package fi.omat.johneagle.filebox;
 
+import java.time.LocalDateTime;
 import fi.omat.johneagle.filebox.domain.entities.Account;
 import fi.omat.johneagle.filebox.domain.entities.Image;
-
-import java.time.LocalDateTime;
 
 /**
  * Methods to simplify tests.

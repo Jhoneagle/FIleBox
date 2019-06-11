@@ -1,9 +1,8 @@
 package fi.omat.johneagle.filebox.repository;
 
-import fi.omat.johneagle.filebox.domain.entities.Account;
 import org.springframework.data.jpa.repository.JpaRepository;
-
 import java.util.List;
+import fi.omat.johneagle.filebox.domain.entities.Account;
 
 /**
  * Account database table interface for JPA.

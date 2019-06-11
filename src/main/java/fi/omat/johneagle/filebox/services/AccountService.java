@@ -1,13 +1,13 @@
 package fi.omat.johneagle.filebox.services;
 
-import fi.omat.johneagle.filebox.domain.entities.Account;
-import fi.omat.johneagle.filebox.domain.validationmodels.AccountModel;
-import fi.omat.johneagle.filebox.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import fi.omat.johneagle.filebox.domain.entities.Account;
+import fi.omat.johneagle.filebox.domain.validationmodels.AccountModel;
+import fi.omat.johneagle.filebox.repository.AccountRepository;
 
 /**
  * Service class for registration and login functions.

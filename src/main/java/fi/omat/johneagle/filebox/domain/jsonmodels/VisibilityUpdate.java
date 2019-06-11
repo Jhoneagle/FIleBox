@@ -1,12 +1,14 @@
 package fi.omat.johneagle.filebox.domain.jsonmodels;
 
+import javax.validation.constraints.NotEmpty;
 import fi.omat.johneagle.filebox.domain.enums.FileVisibility;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotEmpty;
-
+/**
+ * For updating files visibility.
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

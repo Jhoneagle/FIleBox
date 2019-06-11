@@ -1,7 +1,5 @@
 package fi.omat.johneagle.filebox.controllers;
 
-import fi.omat.johneagle.filebox.domain.validationmodels.AccountModel;
-import fi.omat.johneagle.filebox.services.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -10,8 +8,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-
 import javax.validation.Valid;
+import fi.omat.johneagle.filebox.domain.validationmodels.AccountModel;
+import fi.omat.johneagle.filebox.services.AccountService;
 
 /**
  * Controller for routes that do not need authentication except '/home' which is used to redirect user to his own wall after he has logged in.

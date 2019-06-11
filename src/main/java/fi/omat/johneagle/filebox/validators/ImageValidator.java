@@ -1,11 +1,10 @@
 package fi.omat.johneagle.filebox.validators;
 
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
 import java.util.Arrays;
 import java.util.List;
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
 
 /**
  * Constraint class to handle the logic of validator annotation that has this connected into it.

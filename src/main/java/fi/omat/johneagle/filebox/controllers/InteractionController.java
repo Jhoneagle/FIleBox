@@ -1,18 +1,17 @@
 package fi.omat.johneagle.filebox.controllers;
 
-import fi.omat.johneagle.filebox.domain.entities.File;
-import fi.omat.johneagle.filebox.domain.entities.Image;
-import fi.omat.johneagle.filebox.domain.jsonmodels.VisibilityUpdate;
-import fi.omat.johneagle.filebox.services.ApiService;
-import fi.omat.johneagle.filebox.services.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.Valid;
+import fi.omat.johneagle.filebox.domain.entities.File;
+import fi.omat.johneagle.filebox.domain.entities.Image;
+import fi.omat.johneagle.filebox.domain.jsonmodels.VisibilityUpdate;
+import fi.omat.johneagle.filebox.services.ApiService;
+import fi.omat.johneagle.filebox.services.ImageService;
 
 /**
  * Rest controller to handle API calls that relate to interacting with people or system.

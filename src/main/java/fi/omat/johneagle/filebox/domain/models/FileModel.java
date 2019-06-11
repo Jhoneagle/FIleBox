@@ -1,11 +1,13 @@
 package fi.omat.johneagle.filebox.domain.models;
 
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
+/**
+ * Saver and more light version of file entities to shown for user.
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

@@ -1,17 +1,16 @@
 package fi.omat.johneagle.filebox.domain.entities;
 
+import org.hibernate.annotations.Type;
+import org.springframework.data.jpa.domain.AbstractPersistable;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.*;
 import fi.omat.johneagle.filebox.domain.enums.FileVisibility;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Type;
-import org.springframework.data.jpa.domain.AbstractPersistable;
-
-import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Database table for files.

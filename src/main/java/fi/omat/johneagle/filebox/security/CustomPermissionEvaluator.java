@@ -1,13 +1,12 @@
 package fi.omat.johneagle.filebox.security;
 
-import fi.omat.johneagle.filebox.domain.entities.Account;
-import fi.omat.johneagle.filebox.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
-
 import java.io.Serializable;
+import fi.omat.johneagle.filebox.domain.entities.Account;
+import fi.omat.johneagle.filebox.repository.AccountRepository;
 
 /**
  * Custom permission evaluator to replace spring securities default one.

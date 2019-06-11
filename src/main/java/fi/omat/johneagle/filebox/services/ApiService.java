@@ -1,16 +1,19 @@
 package fi.omat.johneagle.filebox.services;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
 import fi.omat.johneagle.filebox.domain.entities.Account;
 import fi.omat.johneagle.filebox.domain.entities.File;
 import fi.omat.johneagle.filebox.domain.enums.FileVisibility;
 import fi.omat.johneagle.filebox.domain.jsonmodels.VisibilityUpdate;
 import fi.omat.johneagle.filebox.repository.AccountRepository;
 import fi.omat.johneagle.filebox.repository.FileRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
 
+/**
+ * Service class for API end points.
+ */
 @Service
 public class ApiService {
     @Autowired

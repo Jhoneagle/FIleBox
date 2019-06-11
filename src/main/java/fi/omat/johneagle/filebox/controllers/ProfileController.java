@@ -1,12 +1,5 @@
 package fi.omat.johneagle.filebox.controllers;
 
-import fi.omat.johneagle.filebox.domain.entities.Account;
-import fi.omat.johneagle.filebox.domain.entities.Image;
-import fi.omat.johneagle.filebox.domain.validationmodels.ChangePasswordModel;
-import fi.omat.johneagle.filebox.domain.validationmodels.DownloadFile;
-import fi.omat.johneagle.filebox.domain.validationmodels.ImageModel;
-import fi.omat.johneagle.filebox.domain.validationmodels.PersonInfoModel;
-import fi.omat.johneagle.filebox.services.ProfileService;
 import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,9 +8,15 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import javax.validation.Valid;
 import java.lang.reflect.InvocationTargetException;
+import javax.validation.Valid;
+import fi.omat.johneagle.filebox.domain.entities.Account;
+import fi.omat.johneagle.filebox.domain.entities.Image;
+import fi.omat.johneagle.filebox.domain.validationmodels.ChangePasswordModel;
+import fi.omat.johneagle.filebox.domain.validationmodels.DownloadFile;
+import fi.omat.johneagle.filebox.domain.validationmodels.ImageModel;
+import fi.omat.johneagle.filebox.domain.validationmodels.PersonInfoModel;
+import fi.omat.johneagle.filebox.services.ProfileService;
 
 /**
  * Controller to handle routes related to profile actions that user can do after authentication which aren't called by javascript.
@@ -103,7 +102,7 @@ public class ProfileController {
     @PostMapping("/fileBox/{nickname}/personal")
     public String updateInfo(@PathVariable String nickname, @Valid @ModelAttribute PersonInfoModel personInfoModel,
                              BindingResult bindingResult, RedirectAttributes redirectAttributes) {
-        if(bindingResult.hasErrors()) {
+        if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.personInfoModel", bindingResult);
             redirectAttributes.addFlashAttribute("personInfoModel", personInfoModel);
         } else {
@@ -117,7 +116,7 @@ public class ProfileController {
     @PostMapping("/fileBox/{nickname}/update")
     public String changePassword(@PathVariable String nickname, @Valid @ModelAttribute ChangePasswordModel changePasswordModel,
                              BindingResult bindingResult, RedirectAttributes redirectAttributes) {
-        if(bindingResult.hasErrors()) {
+        if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.changePasswordModel", bindingResult);
             redirectAttributes.addFlashAttribute("changePasswordModel", changePasswordModel);
         } else {
@@ -159,7 +158,7 @@ public class ProfileController {
     @PostMapping("/fileBox/{nickname}/setProfilePicture")
     public String setAsProfilePicture(@PathVariable String nickname, @Valid @ModelAttribute ImageModel imageModel,
                                       BindingResult bindingResult, RedirectAttributes redirectAttributes) {
-        if(bindingResult.hasErrors()) {
+        if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.imageModel", bindingResult);
             redirectAttributes.addFlashAttribute("imageModel", imageModel);
         } else {

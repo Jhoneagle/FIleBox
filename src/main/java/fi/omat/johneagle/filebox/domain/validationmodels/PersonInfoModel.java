@@ -1,12 +1,11 @@
 package fi.omat.johneagle.filebox.domain.validationmodels;
 
+import java.time.LocalDate;
+import javax.validation.constraints.NotEmpty;
 import fi.omat.johneagle.filebox.validators.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import javax.validation.constraints.NotEmpty;
-import java.time.LocalDate;
 
 /**
  * Validation object for updating personal info.
