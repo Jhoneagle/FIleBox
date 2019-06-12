@@ -30,21 +30,17 @@ public class ApiService {
         FileVisibility fileVisibility = update.getFileVisibility();
         Long id = update.getId();
 
-        try {
-            File one = this.fileRepository.getOne(id);
+        File one = this.fileRepository.getOne(id);
 
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            Account user = accountRepository.findByUsername(auth.getName());
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Account user = accountRepository.findByUsername(auth.getName());
 
-            if (!one.getOwner().equals(user)) {
-                throw new RuntimeException("User doesn't own the file!");
-            }
-
-            one.setVisibility(fileVisibility);
-            this.fileRepository.save(one);
-            return true;
-        } catch (Exception ex) {
+        if (!one.getOwner().equals(user)) {
             return false;
         }
+
+        one.setVisibility(fileVisibility);
+        this.fileRepository.save(one);
+        return true;
     }
 }

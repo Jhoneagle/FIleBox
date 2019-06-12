@@ -18,6 +18,5 @@ public class DownloadFile {
     @File
     private MultipartFile file;
 
-    @NotEmpty
     FileVisibility fileVisibility;
 }

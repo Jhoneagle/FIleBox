@@ -31,11 +31,20 @@ public class Account extends AbstractPersistable<Long> {
     private String email;
     private LocalDate born;
 
+    // (account - follows - account) connection.
+    @OneToMany(mappedBy = "follower")
+    private List<Follow> follower = new ArrayList<>();
+
+    @OneToMany(mappedBy = "followed")
+    private List<Follow> followed = new ArrayList<>();
+
     @OneToOne(mappedBy = "owner")
+    @EqualsAndHashCode.Exclude
     private Image profileImage;
 
     // FIles the account has added.
     @OneToMany(mappedBy = "owner")
+    @EqualsAndHashCode.Exclude
     private List<File> files = new ArrayList<>();
 
     // Authorities account has.

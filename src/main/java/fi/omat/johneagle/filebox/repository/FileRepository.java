@@ -12,5 +12,4 @@ import fi.omat.johneagle.filebox.domain.enums.FileVisibility;
  */
 public interface FileRepository extends JpaRepository<File, Long> {
     List<File> findAllByVisibilityInAndOwner(Collection<FileVisibility> visibility, Account owner);
-    List<File> findAllBySpecificCanSeeContainsAndOwner(List<String> specificCanSee, Account owner);
 }

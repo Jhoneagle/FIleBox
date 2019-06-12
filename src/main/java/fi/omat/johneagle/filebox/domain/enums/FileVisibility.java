@@ -6,7 +6,6 @@ package fi.omat.johneagle.filebox.domain.enums;
 public enum FileVisibility {
     EVERYONE("everyone"),
     FOLLOWERS("followers"),
-    RESTRICT("restrict"),
     ME("me");
 
     private final String displayName;

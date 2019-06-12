@@ -1,6 +1,6 @@
 package fi.omat.johneagle.filebox.domain.jsonmodels;
 
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Positive;
 import fi.omat.johneagle.filebox.domain.enums.FileVisibility;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,9 +13,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class VisibilityUpdate {
-    @NotEmpty
     private FileVisibility fileVisibility;
 
-    @NotEmpty
+    @Positive
     private Long id;
 }

@@ -9,12 +9,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import fi.omat.johneagle.filebox.domain.entities.Account;
 import fi.omat.johneagle.filebox.domain.entities.File;
+import fi.omat.johneagle.filebox.domain.entities.Follow;
 import fi.omat.johneagle.filebox.domain.entities.Image;
 import fi.omat.johneagle.filebox.domain.enums.FileVisibility;
 import fi.omat.johneagle.filebox.domain.models.FileModel;
@@ -24,6 +25,7 @@ import fi.omat.johneagle.filebox.domain.validationmodels.DownloadFile;
 import fi.omat.johneagle.filebox.domain.validationmodels.PersonInfoModel;
 import fi.omat.johneagle.filebox.repository.AccountRepository;
 import fi.omat.johneagle.filebox.repository.FileRepository;
+import fi.omat.johneagle.filebox.repository.FollowRepository;
 import fi.omat.johneagle.filebox.repository.ImageRepository;
 
 /**
@@ -42,6 +44,9 @@ public class ProfileService {
 
     @Autowired
     private FileRepository fileRepository;
+
+    @Autowired
+    private FollowRepository followRepository;
 
     /**
      * Finds users account by his username.
@@ -178,25 +183,42 @@ public class ProfileService {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Account loggedIn = findByUsername(auth.getName());
 
+        Follow following = this.followRepository.findByFollowedAndFollower(whoseWall, loggedIn);
+
+        if (following != null || loggedIn.equals(whoseWall)) {
+            access.add(FileVisibility.FOLLOWERS);
+        }
+
         if (loggedIn.equals(whoseWall)) {
             access.add(FileVisibility.ME);
         }
 
         List<File> files = this.fileRepository.findAllByVisibilityInAndOwner(access, whoseWall);
-        files.addAll(this.fileRepository.findAllBySpecificCanSeeContainsAndOwner(Collections.singletonList(loggedIn.getUsername()), whoseWall));
 
         List<FileModel> toView = new ArrayList<>();
         files.forEach(file -> {
             FileModel model = new FileModel();
             model.setId(file.getId());
-            model.setContentLength(file.getContentLength());
+            model.setContentLength(readableFileSize(file.getContentLength()));
             model.setContentType(file.getContentType());
             model.setFilename(file.getFilename());
             model.setTimestamp(file.getTimestamp());
+
             toView.add(model);
         });
 
         return toView;
+    }
+
+    private String readableFileSize(long size) {
+        if (size <= 0) {
+            return "0";
+        }
+
+        final String[] units = new String[] { "B", "kB", "MB", "GB", "TB" };
+        int digitGroups = (int) (Math.log10(size) / Math.log10(1024));
+
+        return new DecimalFormat("#,##0.#").format(size / Math.pow(1024, digitGroups)) + " " + units[digitGroups];
     }
 
     public void deleteFile(Long id) {
