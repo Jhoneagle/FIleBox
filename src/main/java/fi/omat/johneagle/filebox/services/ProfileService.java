@@ -1,5 +1,6 @@
 package fi.omat.johneagle.filebox.services;
 
+import fi.omat.johneagle.filebox.domain.models.FollowModel;
 import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -13,6 +14,8 @@ import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import fi.omat.johneagle.filebox.domain.entities.Account;
 import fi.omat.johneagle.filebox.domain.entities.File;
 import fi.omat.johneagle.filebox.domain.entities.Follow;
@@ -84,7 +87,6 @@ public class ProfileService {
 
         // Parse the parameter in the actual parameter and get the result as raw data from database.
         String[] parts = search.split(" ");
-        List<SearchResult> result = new ArrayList<>();
         List<Account> filtered;
         if (parts.length > 1) {
             StringBuilder firstName = new StringBuilder(parts[0]);
@@ -101,21 +103,8 @@ public class ProfileService {
             filtered = this.accountRepository.findAllByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(name, name);
         }
 
-        // Reformat the raw data into better format.
-        for (Account found : filtered) {
-            SearchResult model = new SearchResult();
-            model.setNickname(found.getNickname());
-            model.setName(found.getFullName());
-
-            Image pic = found.getProfileImage();
-            if (pic != null) {
-                model.setPic(pic.getId());
-            }
-
-            result.add(model);
-        }
-
-        return result;
+        // Reformat the raw data into better format and return it.
+        return filtered.stream().map(this::createSearchResult).collect(Collectors.toList());
     }
 
     /**
@@ -246,5 +235,60 @@ public class ProfileService {
         file.setVisibility(download.getFileVisibility());
 
         this.fileRepository.save(file);
+    }
+
+    public FollowModel getFollowing(String whoseWall) {
+        Account wall = findByNickname(whoseWall);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Account loggedIn = findByUsername(auth.getName());
+
+        Follow follow = this.followRepository.findByFollowedAndFollower(wall, loggedIn);
+        FollowModel model = new FollowModel();
+
+        model.setFollowed(follow != null && !loggedIn.getNickname().equals(wall.getNickname()));
+        model.setFollows(this.followRepository.countByFollowed(wall));
+
+        return model;
+    }
+
+    public void follow(String whoseWall) {
+        Account wall = findByNickname(whoseWall);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Account loggedIn = findByUsername(auth.getName());
+
+        if (loggedIn.getNickname().equals(wall.getNickname())) {
+            return;
+        }
+
+        Follow follow = this.followRepository.findByFollowedAndFollower(wall, loggedIn);
+
+        if (follow == null) {
+            Follow newOne = new Follow();
+            newOne.setFollowed(wall);
+            newOne.setFollower(loggedIn);
+            newOne.setTimestamp(LocalDateTime.now());
+
+            this.followRepository.save(newOne);
+        } else {
+            this.followRepository.delete(follow);
+        }
+    }
+
+    public List<SearchResult> getFollowers(String nickname) {
+        List<Follow> allByFollowed = this.followRepository.findAllByFollowed(findByNickname(nickname));
+        return allByFollowed.stream().map(Follow::getFollower).map(this::createSearchResult).collect(Collectors.toList());
+    }
+
+    private SearchResult createSearchResult(Account follower) {
+        SearchResult model = new SearchResult();
+        model.setNickname(follower.getNickname());
+        model.setName(follower.getFullName());
+        Image pic = follower.getProfileImage();
+
+        if (pic != null) {
+            model.setPic(pic.getId());
+        }
+
+        return model;
     }
 }

@@ -49,6 +49,7 @@ public class ProfileController {
             model.addAttribute("picId", profileImage.getId());
         }
 
+        model.addAttribute("following", this.profileService.getFollowing(nickname));
         model.addAttribute("files", this.profileService.getShowableFiles(nickname));
         model.addAttribute("profileName", name);
         model.addAttribute("whoseWall", owner.getNickname());
@@ -190,5 +191,17 @@ public class ProfileController {
     public String deleteFile(@PathVariable String nickname, @PathVariable Long id) {
         this.profileService.deleteFile(id);
         return "redirect:/fileBox/" + nickname;
+    }
+
+    @PostMapping("/fileBox/{nickname}/edit/follow")
+    public String editFollow(@PathVariable String nickname) {
+        this.profileService.follow(nickname);
+        return "redirect:/fileBox/" + nickname;
+    }
+
+    @GetMapping("/fileBox/{nickname}/follows")
+    public String follows(Model model, @PathVariable String nickname) {
+        model.addAttribute("followers", this.profileService.getFollowers(nickname));
+        return "follows-page";
     }
 }

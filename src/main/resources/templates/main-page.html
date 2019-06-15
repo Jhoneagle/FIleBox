@@ -23,7 +23,7 @@
         <div layout:fragment="content" class="container">
             <div class="container">
                 <div class="row">
-                    <div class="col-sm-3 well text-center">
+                    <div class="col-sm-12 well text-center">
                         <div>
                             <div th:if="${picId}" class="panel-body text-center">
                                 <img th:src="@{/fileBox/api/images/{id}(id=${picId})}" class="img-circle profile-avatar" height="65" width="65" alt="User avatar">
@@ -37,12 +37,42 @@
                             <p><a th:href="'/fileBox/' + ${whoseWall} + '/personal'">Edit profile</a></p>
                         </div>
                     </div>
-                    <div class="col-sm-9">
+
+                    <div class="row text-center">
+                        <a th:href="'/fileBox/' + ${whoseWall} + '/follows'">
+                            <span class="badge" th:text="${following.follows}"></span>
+                        </a>
+                    </div>
+                    <form class="form-horizontal row" th:action="@{/fileBox/{path}/edit/follow(path=${whoseWall})}" method="post">
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-sm-6 col-sm-offset-3">
+                                    <div th:if="${following.followed}">
+                                        <input type="submit"
+                                               name="follow-submit"
+                                               id="follow-submit"
+                                               class="form-control btn btn-danger"
+                                               value="Don't follow">
+                                    </div>
+                                    <div th:unless="${following.followed}">
+                                        <input type="submit"
+                                               name="follow-submit"
+                                               id="follow-submit"
+                                               class="form-control btn btn-success"
+                                               value="Follow">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
                         <div sec:authorize="hasPermission('owner', #request.getAttribute('whoseWall'))">
                             <form class="form-horizontal" th:action="@{/fileBox/{path}/newFIle(path=${whoseWall})}"
                                   th:object="${downloadFile}" method="post" enctype="multipart/form-data">
 
-                                <div class="col-sm-10">
+                                <div class="col-sm-6">
                                     <input type="file"
                                            id="file"
                                            name="file"
@@ -51,7 +81,7 @@
                                 </div>
                                 <div th:if="${#fields.hasErrors('file')}" th:errors="*{file}"></div>
 
-                                <div class="col-sm-10">
+                                <div class="col-sm-6">
                                     <select class="form-control" th:field="*{{fileVisibility}}">
                                         <option th:each="state : ${T(fi.omat.johneagle.filebox.domain.enums.FileVisibility).values()}"
                                                 th:value="${state}"
@@ -75,7 +105,7 @@
                             </form>
                         </div>
 
-                        <div th:each="file, iStat : ${files}" class="file-holder">
+                        <div th:each="file, iStat : ${files}" class="file-holder col-sm-12">
                             <div class="row">
                                 <h5 th:text="${file.filename}" class="d-inline" style="padding-left:5px">name of the file</h5>
                                 <span th:text="${#temporals.format(file.timestamp, 'dd.MM.yyyy HH:mm')}" class="d-inline glyphicon glyphicon-time">time when downloaded</span>
