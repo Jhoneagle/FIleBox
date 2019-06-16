@@ -26,6 +26,14 @@ public class ApiService {
         return this.fileRepository.getOne(id);
     }
 
+    /**
+     * Updates files visibility according to given info.
+     *
+     * @param update new visibility
+     *
+     * @return <code>true</code> if allowed to do it so basically if operation is success.
+     * Otherwise <code>false</code>.
+     */
     public boolean updateFIleVisibility(VisibilityUpdate update) {
         FileVisibility fileVisibility = update.getFileVisibility();
         Long id = update.getId();

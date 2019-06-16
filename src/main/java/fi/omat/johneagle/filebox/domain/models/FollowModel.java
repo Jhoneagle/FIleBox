@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Model to indicate if person is been followed or not and how many follows he generally has.
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

@@ -27,6 +27,14 @@ public class ProfileController {
     @Autowired
     private ProfileService profileService;
 
+    /**
+     * Main page and peoples wall.
+     *
+     * @param model model object
+     * @param nickname nickname of the person whose page
+     *
+     * @return template name.
+     */
     @GetMapping("/fileBox/{nickname}")
     public String mainPage(Model model, @PathVariable String nickname) {
         if (!model.containsAttribute("downloadFile")) {
@@ -101,7 +109,16 @@ public class ProfileController {
         return "personal-page";
     }
 
-
+    /**
+     * Updates persons account information if validation accepts it. Only user itself has access thanks to PreAuthorize.
+     *
+     * @param nickname nickname of the user
+     * @param personInfoModel validation model for account update
+     * @param bindingResult wrapper for validation errors
+     * @param redirectAttributes object to enable attributes in redirection
+     *
+     * @return redirect back to page came from.
+     */
     @PreAuthorize("hasPermission('owner', #nickname)")
     @PostMapping("/fileBox/{nickname}/personal")
     public String updateInfo(@PathVariable String nickname, @Valid @ModelAttribute PersonInfoModel personInfoModel,
@@ -151,8 +168,8 @@ public class ProfileController {
      *
      * @see fi.omat.johneagle.filebox.security.CustomPermissionEvaluator
      *
-     * @param nickname nickname of the user who owns the picture.
-     * @param imageModel validation model
+     * @param nickname nickname of the user who owns the picture
+     * @param imageModel validation model for image
      * @param bindingResult wrapper for validation errors
      * @param redirectAttributes object to enable attributes in redirection
      *
@@ -172,6 +189,17 @@ public class ProfileController {
         return "redirect:/fileBox/" + nickname + "/personal";
     }
 
+    /**
+     * To create new file if validation allows it.
+     * This router is also preAuthorized by security to make sure user has authorization to do this.
+     *
+     * @param nickname nickname of the user who owns the file
+     * @param downloadFile validation model for file
+     * @param bindingResult wrapper for validation errors
+     * @param redirectAttributes object to enable attributes in redirection
+     *
+     * @return redirection back to the main page.
+     */
     @PreAuthorize("hasPermission('owner', #nickname)")
     @PostMapping("/fileBox/{nickname}/newFIle")
     public String saveFile(@PathVariable String nickname, @Valid @ModelAttribute DownloadFile downloadFile,
@@ -186,6 +214,15 @@ public class ProfileController {
         return "redirect:/fileBox/" + nickname;
     }
 
+    /**
+     * Deletes the file if has the access to do it of course.
+     * This router is also preAuthorized by security to make sure user has authorization to do this.
+     *
+     * @param nickname nickname of the user who owns the file
+     * @param id of the file
+     *
+     * @return redirection back to the main page.
+     */
     @PreAuthorize("hasPermission('owner', #nickname)")
     @PostMapping("/fileBox/{nickname}/deleteFile/{id}")
     public String deleteFile(@PathVariable String nickname, @PathVariable Long id) {
@@ -193,12 +230,26 @@ public class ProfileController {
         return "redirect:/fileBox/" + nickname;
     }
 
+    /**
+     * Changes status of following between user and selected person.
+     *
+     * @param nickname nickname of the user who is wanted to be followed or unfollowed
+     *
+     * @return redirection back to the main page.
+     */
     @PostMapping("/fileBox/{nickname}/edit/follow")
     public String editFollow(@PathVariable String nickname) {
         this.profileService.follow(nickname);
         return "redirect:/fileBox/" + nickname;
     }
 
+    /**
+     * Lists all the followers of the person.
+     *
+     * @param nickname nickname of the user whose followers wanted
+     *
+     * @return followers page.
+     */
     @GetMapping("/fileBox/{nickname}/follows")
     public String follows(Model model, @PathVariable String nickname) {
         model.addAttribute("followers", this.profileService.getFollowers(nickname));

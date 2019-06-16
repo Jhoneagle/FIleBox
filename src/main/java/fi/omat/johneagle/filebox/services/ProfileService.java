@@ -1,6 +1,5 @@
 package fi.omat.johneagle.filebox.services;
 
-import fi.omat.johneagle.filebox.domain.models.FollowModel;
 import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -15,13 +14,13 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import fi.omat.johneagle.filebox.domain.entities.Account;
 import fi.omat.johneagle.filebox.domain.entities.File;
 import fi.omat.johneagle.filebox.domain.entities.Follow;
 import fi.omat.johneagle.filebox.domain.entities.Image;
 import fi.omat.johneagle.filebox.domain.enums.FileVisibility;
 import fi.omat.johneagle.filebox.domain.models.FileModel;
+import fi.omat.johneagle.filebox.domain.models.FollowModel;
 import fi.omat.johneagle.filebox.domain.models.SearchResult;
 import fi.omat.johneagle.filebox.domain.validationmodels.ChangePasswordModel;
 import fi.omat.johneagle.filebox.domain.validationmodels.DownloadFile;
@@ -156,6 +155,11 @@ public class ProfileService {
         this.accountRepository.save(user);
     }
 
+    /**
+     * Updates users password by the given info.
+     *
+     * @param changePasswordModel validated new password.
+     */
     public void updatePassword(ChangePasswordModel changePasswordModel) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Account user = findByUsername(auth.getName());
@@ -164,6 +168,13 @@ public class ProfileService {
         this.accountRepository.save(user);
     }
 
+    /**
+     * Get all files allowed to see.
+     *
+     * @param nickname whose files wanted to be seen
+     *
+     * @return list of files can be seen from user.
+     */
     public List<FileModel> getShowableFiles(String nickname) {
         List<FileVisibility> access = new ArrayList<>();
         access.add(FileVisibility.EVERYONE);
@@ -199,6 +210,13 @@ public class ProfileService {
         return toView;
     }
 
+    /**
+     * Formats file size to readable string.
+     *
+     * @param size files size in bytes.
+     *
+     * @return bytes in pretty string.
+     */
     private String readableFileSize(long size) {
         if (size <= 0) {
             return "0";
@@ -214,6 +232,11 @@ public class ProfileService {
         this.fileRepository.delete(this.fileRepository.getOne(id));
     }
 
+    /**
+     * Saves the new file that is added.
+     *
+     * @param download new file that has been validated.
+     */
     public void saveFile(DownloadFile download) {
         MultipartFile newOne = download.getFile();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -237,6 +260,13 @@ public class ProfileService {
         this.fileRepository.save(file);
     }
 
+    /**
+     * Get follows and boolean of is followed by user.
+     *
+     * @param whoseWall person been checked.
+     *
+     * @return info if user follows the person and how many people follows him.
+     */
     public FollowModel getFollowing(String whoseWall) {
         Account wall = findByNickname(whoseWall);
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -251,6 +281,11 @@ public class ProfileService {
         return model;
     }
 
+    /**
+     * Follows the person if not yet otherwise removes the follow.
+     *
+     * @param whoseWall person who user wants to follow or unfollow.
+     */
     public void follow(String whoseWall) {
         Account wall = findByNickname(whoseWall);
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

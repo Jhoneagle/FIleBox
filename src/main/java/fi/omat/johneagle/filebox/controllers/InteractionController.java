@@ -29,32 +29,45 @@ public class InteractionController {
      * Can be used through image tags src attribute as if this was actual image file when in fact its gotten from database.
      *
      * @param id id of the image to be shown.
+     *
      * @return Content of the image.
      */
     @GetMapping("/fileBox/api/images/{id}")
     public ResponseEntity<byte[]> viewImage(@PathVariable Long id) {
         Image image = this.imageService.getImageById(id);
-
-        final HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.parseMediaType(image.getContentType()));
-        headers.setContentLength(image.getContentLength());
-        headers.add("Content-Disposition", "attachment; filename=" + image.getFilename());
-
-        return new ResponseEntity<>(image.getContent(), headers, HttpStatus.CREATED);
+        return getResponseEntity(image.getContentType(), image.getContentLength(), image.getFilename(), image.getContent());
     }
 
+    /**
+     * Used to download files in the application without taking their byte arrays into template.
+     * Can be used through as a link.
+     *
+     * @param id id of the file to be download.
+     *
+     * @return Content of the file.
+     */
     @GetMapping("/fileBox/api/files/{id}")
     public ResponseEntity<byte[]> viewFile(@PathVariable Long id) {
         File fo = apiService.getFile(id);
-
-        final HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.parseMediaType(fo.getContentType()));
-        headers.setContentLength(fo.getContentLength());
-        headers.add("Content-Disposition", "attachment; filename=" + fo.getFilename());
-
-        return new ResponseEntity<>(fo.getContent(), headers, HttpStatus.CREATED);
+        return getResponseEntity(fo.getContentType(), fo.getContentLength(), fo.getFilename(), fo.getContent());
     }
 
+    private ResponseEntity<byte[]> getResponseEntity(String contentType, Long contentLength, String filename, byte[] content) {
+        final HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.parseMediaType(contentType));
+        headers.setContentLength(contentLength);
+        headers.add("Content-Disposition", "attachment; filename=" + filename);
+
+        return new ResponseEntity<>(content, headers, HttpStatus.CREATED);
+    }
+
+    /**
+     * API endpoint to update files visibility.
+     *
+     * @param update new visibility.
+     *
+     * @return string to indicate if operation succeed or not.
+     */
     @PostMapping("/fileBox/api/files/access")
     public String updateVisibility(@Valid @RequestBody VisibilityUpdate update) {
         boolean success = this.apiService.updateFIleVisibility(update);
